@@ -38,6 +38,7 @@ import json
 import os
 import platform
 import re
+import shutil
 import subprocess
 import tempfile
 import zipfile
@@ -568,8 +569,7 @@ def copy_into_clobber(src: Path, dst: Path) -> None:
     target = dst / src.name
     if target.exists():
         rmrf(target)
-    # TODO: not available before Python 3.14
-    src.copy_into(dst)
+    shutil.copytree(src, target)
 
 
 def get_config_home() -> Path:
