@@ -120,9 +120,15 @@ def main() -> None:
         revisions = {}
         for parser in args.parsers:
             if ":" not in parser:
+                if parser in parsers:
+                    print(f"Duplicate parser {parser} found")
+                    return
                 parsers.append(parser)
                 continue
             name, repo_maybe_rev = parser.split(":", 1)
+            if name in parsers:
+                print(f"Duplicate parser {name} found")
+                return
             parsers.append(name)
             split = repo_maybe_rev.split("@")
             if len(split) > 2:
@@ -541,7 +547,6 @@ def get_last_revision(src: str) -> str:
 
 def download_repo(url: str, archive_name: str, download_path: Path) -> Path:
     src_url = url + f"/archive/{archive_name}.zip"
-    print(src_url)
     with urlopen(src_url) as response:
         zip_data = response.read()
     with zipfile.ZipFile(io.BytesIO(zip_data)) as z:
