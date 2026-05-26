@@ -272,7 +272,7 @@ def install_or_update_repo(
         "tree-sitter",
         "build",
         "--output",
-        parser_dir / f"{repo.name}.{so_suffix}",
+        str(parser_dir / f"{repo.name}.{so_suffix}"),
     ]
     if wasm:
         cmd.append("--wasm")
