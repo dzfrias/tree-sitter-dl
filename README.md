@@ -1,14 +1,16 @@
 # tree-sitter-dl
 
-tree-sitter-dl is a simple Python script to help replace the archived
-[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter). It should
-work with recent versions of Python 3. To run it, you must have the following
-programs on your computer:
+`tree-sitter-dl.py` is a simple Python script that helps replace the archived
+[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter). It
+manages the installation of
+[tree-sitter](https://tree-sitter.github.io/tree-sitter/) parsers for
+[Neovim](https://neovim.io/). It should work with recent versions of Python 3.
+To run it, you must have the following programs on your computer:
 
 - git
-- [tree-sitter](https://tree-sitter.github.io/tree-sitter/creating-parsers/1-getting-started.html)
+- [tree-sitter CLI](https://tree-sitter.github.io/tree-sitter/creating-parsers/1-getting-started.html)
 
-Using the script is simple. To install:
+Using the script is simple. To install parsers:
 
 ```
 ./tree-sitter-dl.py install python zig rust
@@ -27,12 +29,20 @@ If you would like to install specific parsers:
 ```
 
 Use the `--help` flag for all options. The default install location will be your
-config directory. For example, on macOS, this is `~/.config/nvim`. Note that in
-order to enable syntax highlighting, you must run `vim.treesitter.start()`
-somewhere in your configuration.
+config directory. For example, on macOS, this is `~/.config/nvim`.
 
-Indentation, folding, and other niceities **will not work**; those features were
-provided by nvim-treesitter, not built-in to Neovim.
+Neovim supports tree-sitter highlighting and folding out of the box. You can
+enable them with the following lines in your `ftplugin/*` files (that have
+corresponding Neovim parsers):
+
+```lua
+vim.treesitter.start()
+vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.wo[0][0].foldmethod = 'expr'
+```
+
+Note that tree-sitter indentation **will not work**, as it was provided by
+nvim-treesitter.
 
 Read [my blog post](https://dzfrias.dev/blog/tree-sitter-post-archival) for more
 information.
