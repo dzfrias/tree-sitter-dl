@@ -212,6 +212,10 @@ def install_or_update(
             )
         print(f"Installing parsers: {', '.join(r.name for r in best_repos)}")
 
+        if wasm and not has_wasi_sdk():
+            print("WASI SDK not found")
+            install_wasi_sdk()
+
         # Parallelize downloading
         with ThreadPoolExecutor(max_workers=8) as pool:
             for result in pool.map(
@@ -278,7 +282,7 @@ def install_or_update_repo(
         cmd.append("--wasm")
     print(f"Running: {' '.join(map(str, cmd))}")
     # Get shared library
-    subprocess.run(cmd, cwd=dir)
+    subprocess.run(cmd, cwd=dir, check=True)
     # Get queries
     print(f"Getting runtime queries for {repo.url}")
     copy_queries(nvim_treesitter / "runtime" / "queries", repo.name, queries_dir)
@@ -439,6 +443,39 @@ def get_inherited_queries(base_path: Path, name: str) -> set[str]:
                 if (base_path / parent).exists():
                     inherits |= get_inherited_queries(base_path, parent)
     return inherits
+
+
+def get_wasi_sdk_location() -> Path:
+    sdk_path_str = os.environ.get("TREE_SITTER_WASI_SDK_PATH")
+    if sdk_path_str is None:
+        system = platform.system()
+        if system == "Windows":
+            cache_home = Path(
+                os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local")
+            )
+        else:
+            cache_home = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
+        return cache_home / "tree-sitter/wasi-sdk"
+    return Path(sdk_path_str)
+
+
+def has_wasi_sdk() -> bool:
+    sdk_path = get_wasi_sdk_location()
+    return sdk_path.exists()
+
+
+def install_wasi_sdk() -> None:
+    print("Installing WASI SDK")
+    with tempfile.TemporaryDirectory() as tempdir:
+        base = Path(tempdir)
+        dummy_grammar = base / "grammar.js"
+        dummy_grammar.touch()
+        cmd = ["tree-sitter", "build", "--wasm"]
+        print(f"Running: {' '.join(map(str, cmd))} at {base}")
+        subprocess.run(cmd, cwd=base, check=False)
+        print(f"Checking WASI SDK installation at {get_wasi_sdk_location()}")
+        assert has_wasi_sdk()
+        print("WASI SDK installed")
 
 
 # ----LOCKFILE----
