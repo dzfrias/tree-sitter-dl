@@ -44,7 +44,7 @@ vim.wo[0][0].foldmethod = 'expr'
 Note that tree-sitter indentation **will not work**, as it was provided by
 nvim-treesitter.
 
-Read [my blog post](https://dzfrias.dev/blog/tree-sitter-post-archival) for more
+Read [my blog post](https://dzfrias.dev/blog/tree-sitter-dl) for more
 information.
 
 # License
