@@ -55,6 +55,19 @@ LOCKFILE_NAME = "tree-sitter-dl-lock.json"
 
 
 def main() -> None:
+    if shutil.which("tree-sitter") is None:
+        print("tree-sitter CLI was not found in your PATH")
+        print(
+            "See https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md"
+        )
+        print(
+            "Or, if you have installed it, make sure it is in your PATH environment variable"
+        )
+        return
+    if shutil.which("git") is None:
+        print("git is not installed!")
+        return
+
     parser = argparse.ArgumentParser(
         prog="tree-sitter-dl",
         description="Download tree-sitter parsers for Neovim",
