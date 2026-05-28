@@ -47,6 +47,20 @@ nvim-treesitter.
 Read [my blog post](https://dzfrias.dev/blog/tree-sitter-dl) for more
 information.
 
+# Why tree-sitter-dl?
+
+There are many Neovim-related tree-sitter parser managers. Why use a Python
+script? Here are a couple reasons:
+
+- It is independent of Neovim version
+- tree-sitter-dl focuses on safety: don't install parsers without trusting them
+  first
+- CLI interfaces are more consistent than Neovim interfaces
+- This script isn't meant to fall out of date or require heavy maintainance over
+  time
+
+If these sound appealing to you, give tree-sitter-dl a try!
+
 # License
 
 This program is licensed under the [MIT license](/LICENSE).
